@@ -1,16 +1,12 @@
 package arraylist;
 
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -190,6 +186,71 @@ public class ArrayListTest {
         assertNotEquals(intArray.size(), 10);
         assertEquals(intArray.size(), 6);
     }
+
+
+    @Test
+    @DisplayName("arrayList 의 removeAll(Collection)")
+    void arrayListRemoveAll() {
+        List<Integer> intArray = new ArrayList<>();
+        List<Integer> zeroToFiveArray = Arrays.asList(0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0);
+        List<Integer> removeArray = Arrays.asList(0, 1, 2, 3, 4);
+        intArray.addAll(zeroToFiveArray);
+
+        assertEquals(intArray.size(), 11);
+
+        intArray.removeAll(removeArray);
+        assertEquals(intArray.size(), 1);
+        assertEquals(intArray.get(0), 5);
+    }
+
+
+    @Test
+    @DisplayName("arrayList 의 retainAll(Collection)")
+    void arrayListRetainAll() {
+        List<Integer> intArray = new ArrayList<>();
+        List<Integer> zeroToFiveArray = Arrays.asList(0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0);
+        List<Integer> retainArray = Arrays.asList(0, 1, 2, 3, 4);
+        intArray.addAll(zeroToFiveArray);
+
+        assertEquals(intArray.size(), 11);
+
+        intArray.retainAll(retainArray);
+        assertEquals(intArray.size(), 10);
+
+        assertAll(
+                () -> assertEquals(intArray.indexOf(0), 0),
+                () -> assertEquals(intArray.indexOf(1), 1),
+                () -> assertEquals(intArray.indexOf(2), 2),
+                () -> assertEquals(intArray.indexOf(3), 3),
+                () -> assertEquals(intArray.indexOf(4), 4),
+                () -> assertEquals(intArray.lastIndexOf(0), 9),
+                () -> assertEquals(intArray.lastIndexOf(1), 8),
+                () -> assertEquals(intArray.lastIndexOf(2), 7),
+                () -> assertEquals(intArray.lastIndexOf(3), 6),
+                () -> assertEquals(intArray.lastIndexOf(4), 5)
+        );
+    }
+
+
+    @Test
+    @DisplayName("arrayList 의 iterator()")
+    void arrayListIterator() {
+        List<Integer> intArray = new ArrayList<>();
+        List<Integer> zeroToFiveArray = Arrays.asList(0, 1, 2, 3, 4, 5);
+        intArray.addAll(zeroToFiveArray);
+
+        Iterator<Integer> iterator = intArray.iterator();
+
+        int count = 0;
+        while (iterator.hasNext()) {
+            Integer next = iterator.next();
+            assertEquals(next, count);
+            count++;
+        }
+
+    }
+
+
 
 
 }
