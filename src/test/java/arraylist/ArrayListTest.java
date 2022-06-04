@@ -3,14 +3,23 @@ package arraylist;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ArrayListTest {
+
+    @Test
+    @DisplayName("arrayList 의 생성자 중 ArrayList(Collections)")
+    void arrayListConstructor() {
+        List<Integer> intArray = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4));
+
+        int size = intArray.size();
+        for (int i = 0; i < size; i++) {
+            assertEquals(intArray.get(i), i);
+        }
+    }
+
 
     @Test
     @DisplayName("arrayList add Test")
@@ -25,6 +34,35 @@ public class ArrayListTest {
         assertEquals(intArray.get(1), 2);
         assertEquals(intArray.get(2), 3);
     }
+
+    @Test
+    @DisplayName("arrayList 의 addAll(Collection)")
+    void arrayListAddAll() {
+        List<Integer> intArray = new ArrayList<>();
+        intArray.addAll(Arrays.asList(0, 1, 2, 3, 4, 5));
+
+        int size = intArray.size();
+        assertEquals(size, 6);
+        for (int i = 0; i < size; i++) {
+            assertEquals(intArray.get(i), i);
+        }
+        intArray.addAll(3, Arrays.asList(2, 2, 2));
+        size = intArray.size();
+        assertEquals(size, 9);
+        for (int i = 0; i < size; i++) {
+            System.out.print(intArray.get(i) + " ");
+            // 출력 결과 -> 0 1 2 2 2 2 3 4 5
+        }
+
+    }
+
+    @Test
+    @DisplayName("arrayList 의 addAll(null)")
+    void arrayListAddAllException() {
+        List<Integer> intArray = new ArrayList<>();
+        assertThrows(NullPointerException.class, () -> intArray.addAll(null));
+    }
+
 
     @Test
     @DisplayName("ArrayList의 없는 인덱스 데이터 get(index) 할 때 Index Out Of Exception")
@@ -63,37 +101,65 @@ public class ArrayListTest {
         assertEquals(removeIndexTwo, 1);
     }
 
-    @Test
-    @DisplayName("arrayList 의 생성자 중 ArrayList(Collections)")
-    void arrayListConstructor() {
-        List<Integer> intArray = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4));
 
-        int size = intArray.size();
-        for (int i = 0; i < size; i++) {
-            assertEquals(intArray.get(i), i);
-        }
+    @Test
+    @DisplayName("arrayList 의 removeAll(Collection)")
+    void arrayListRemoveAll() {
+        List<Integer> intArray = new ArrayList<>();
+        List<Integer> zeroToFiveArray = Arrays.asList(0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0);
+        List<Integer> removeArray = Arrays.asList(0, 1, 2, 3, 4);
+        intArray.addAll(zeroToFiveArray);
+
+        assertEquals(intArray.size(), 11);
+
+        intArray.removeAll(removeArray);
+        assertEquals(intArray.size(), 1);
+        assertEquals(intArray.get(0), 5);
     }
 
+
     @Test
-    @DisplayName("arrayList 의 addAll(Collection)")
-    void arrayListAddAll() {
+    @DisplayName("arrayList 의 removeAll(null)")
+    void arrayListRemoveAllException() {
         List<Integer> intArray = new ArrayList<>();
-        intArray.addAll(Arrays.asList(0, 1, 2, 3, 4, 5));
+        List<Integer> zeroToFiveArray = Arrays.asList(0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0);
+        intArray.addAll(zeroToFiveArray);
+
+        assertThrows(
+                NullPointerException.class
+                , () -> intArray.removeAll(null)
+        );
+    }
+
+
+    @Test
+    @DisplayName("arrayList removeIf(Predicate)")
+    void arrayListRemoveIf() {
+        List<Integer> intArray = new ArrayList<>();
+        List<Integer> zeroToTenArray = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        intArray.addAll(zeroToTenArray);
+
+        intArray.removeIf((number) -> {
+            return number > 5;
+        });
 
         int size = intArray.size();
         assertEquals(size, 6);
-        for (int i = 0; i < size; i++) {
-            assertEquals(intArray.get(i), i);
-        }
-        intArray.addAll(3, Arrays.asList(2, 2, 2));
-        size = intArray.size();
-        assertEquals(size, 9);
-        for (int i = 0; i < size; i++) {
-            System.out.print(intArray.get(i) + " ");
-            // 출력 결과 -> 0 1 2 2 2 2 3 4 5
-        }
-
+        assertFalse(intArray.containsAll(Arrays.asList(6,7,8,9,10)));
     }
+
+    @Test
+    @DisplayName("arrayList 의 size()")
+    void arrayListSize() {
+        List<Integer> intArray = new ArrayList<>(10);
+
+        List<Integer> zeroToFiveArray = Arrays.asList(0, 1, 2, 3, 4, 5);
+        intArray.addAll(zeroToFiveArray);
+
+        assertNotEquals(intArray.size(), 10);
+        assertEquals(intArray.size(), 6);
+    }
+
 
     @Test
     @DisplayName("arrayList 의 isEmpty()")
@@ -176,35 +242,6 @@ public class ArrayListTest {
     }
 
     @Test
-    @DisplayName("arrayList 의 size()")
-    void arrayListSize() {
-        List<Integer> intArray = new ArrayList<>(10);
-
-        List<Integer> zeroToFiveArray = Arrays.asList(0, 1, 2, 3, 4, 5);
-        intArray.addAll(zeroToFiveArray);
-
-        assertNotEquals(intArray.size(), 10);
-        assertEquals(intArray.size(), 6);
-    }
-
-
-    @Test
-    @DisplayName("arrayList 의 removeAll(Collection)")
-    void arrayListRemoveAll() {
-        List<Integer> intArray = new ArrayList<>();
-        List<Integer> zeroToFiveArray = Arrays.asList(0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0);
-        List<Integer> removeArray = Arrays.asList(0, 1, 2, 3, 4);
-        intArray.addAll(zeroToFiveArray);
-
-        assertEquals(intArray.size(), 11);
-
-        intArray.removeAll(removeArray);
-        assertEquals(intArray.size(), 1);
-        assertEquals(intArray.get(0), 5);
-    }
-
-
-    @Test
     @DisplayName("arrayList 의 retainAll(Collection)")
     void arrayListRetainAll() {
         List<Integer> intArray = new ArrayList<>();
@@ -250,6 +287,73 @@ public class ArrayListTest {
 
     }
 
+
+
+
+    @Test
+    @DisplayName("arrayList subList(fromIndex, toIndex)")
+    void arrayListSubList() {
+        List<Integer> intArray = new ArrayList<>();
+        List<Integer> zeroToTenArray = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        intArray.addAll(zeroToTenArray);
+
+
+        List<Integer> subList = intArray.subList(2, 6);
+        // 시작 인덱스 포함, 끝 인덱스 미포함
+
+        int size = subList.size();
+        assertEquals(size, 4);
+        assertTrue(subList.containsAll(Arrays.asList(2, 3, 4, 5)));
+    }
+
+    @Test
+    @DisplayName("arrayList set(index, value)")
+    void arrayListSet() {
+        List<Integer> intArray = new ArrayList<>();
+        List<Integer> zeroToFiveArray = Arrays.asList(0, 1, 2, 3, 4, 5);
+        intArray.addAll(zeroToFiveArray);
+
+        intArray.set(0, 6); // 0 -> 6
+        intArray.set(1, 7); // 1 -> 7
+        intArray.set(2, 8); // 2 -> 8
+        intArray.set(3, 9); // 3 -> 9
+        intArray.set(4, 10); // 4 -> 10
+        intArray.remove(5);
+
+        assertFalse(intArray.containsAll(zeroToFiveArray));
+        assertTrue(intArray.containsAll(Arrays.asList(6, 7, 8, 9, 10)));
+    }
+
+
+    @Test
+    @DisplayName("arrayList sort(Comparator)")
+    void arrayListSort() {
+        List<Integer> intArray = new ArrayList<>();
+        List<Integer> zeroToTenArray = Arrays.asList(10, 8, 5, 3, 1, 9, 7, 4, 2, 0, 6);
+        intArray.addAll(zeroToTenArray);
+
+
+        intArray.sort(
+                (n1, n2) -> {
+                    return n1 - n2;
+                }
+        );
+        // 0 ~ 10 까지 정렬
+        intArray.forEach(System.out::println);
+        assertAll(
+                () -> assertEquals(intArray.indexOf(0), 0),
+                () -> assertEquals(intArray.indexOf(1), 1),
+                () -> assertEquals(intArray.indexOf(2), 2),
+                () -> assertEquals(intArray.indexOf(3), 3),
+                () -> assertEquals(intArray.indexOf(4), 4),
+                () -> assertEquals(intArray.indexOf(5), 5),
+                () -> assertEquals(intArray.indexOf(6), 6),
+                () -> assertEquals(intArray.indexOf(7), 7),
+                () -> assertEquals(intArray.indexOf(8), 8),
+                () -> assertEquals(intArray.indexOf(9), 9),
+                () -> assertEquals(intArray.indexOf(10), 10)
+        );
+    }
 
 
 
